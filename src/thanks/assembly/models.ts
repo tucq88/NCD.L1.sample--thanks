@@ -12,6 +12,7 @@ export class Message {
 
   constructor(
     public text: string,
+    public rating: i32,
     anonymous: bool = false,
     public contribution: u128 = u128.Zero
   ) {

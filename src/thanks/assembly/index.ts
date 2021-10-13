@@ -18,7 +18,7 @@ export class Contract {
   }
 
   @mutateState()
-  say(message: string, anonymous: bool = false): bool {
+  say(message: string, rating: i32, anonymous: bool = false): bool {
     // guard against too much money being deposited to this account in beta
     const deposit = Context.attachedDeposit
     this.assert_financial_safety_limits(deposit)
@@ -26,6 +26,10 @@ export class Contract {
     // guard against invalid message size
     assert(message.length > 0, "Message length cannot be 0")
     assert(message.length < Message.max_length(), "Message length is too long, must be less than " + Message.max_length().toString() + " characters.")
+
+    // guard against invalid rating number
+    assert(rating <= 10, "Rating should be lesser or equal 10")
+    assert(rating >= 1, "Rating should be bigger or equal 1")
 
     if (!this.allow_anonymous) {
       assert(!anonymous, "Anonymous messages are not allowed by this contract")
@@ -35,7 +39,7 @@ export class Contract {
       this.contributions.update(deposit)
     }
 
-    messages.pushBack(new Message(message, anonymous, deposit))
+    messages.pushBack(new Message(message, rating, anonymous, deposit))
     return true
   }
 
